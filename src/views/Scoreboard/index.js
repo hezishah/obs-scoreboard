@@ -1,14 +1,33 @@
 import React, { useEffect, Component } from "react";
+import Collapse from "@material-ui/core/Collapse";
+
 var ls = require("local-storage");
 
 class Scoreboard extends Component {
   constructor() {
     super();
     this.details = {};
+    this.checked = true;
   }
   componentDidMount() {
     this.set(ls.get("details"));
     ls.on("details", this.set);
+  }
+  componentDidUpdate() {
+    if (this.details.alertText)
+      setTimeout(() => {
+        ls.set("details", {
+          ...this.details,
+          alertColor: null,
+          alertText: null
+        });
+        this.details = {
+          ...this.details,
+          alertColor: null,
+          alertText: null
+        };
+        this.forceUpdate();
+      }, 3000);
   }
   // setDetails(window.localStorage.getItem('details'))
   set = value => {
@@ -18,93 +37,117 @@ class Scoreboard extends Component {
 
   render() {
     return (
-      <div style={{ width: "100%", height: 58, fontFamily: "roboto" }}>
+      <div>
+        <Collapse style={{ zIndex: 1000 }} in={this.details.alertText}>
+          <div
+            style={{
+              width: "100%",
+              height: 58,
+              backgroundColor: this.details.alertColor || "grey",
+              zIndex: 1000
+            }}
+          >
+            <span style={{ fontSize: 45, color: "white" }}>
+              {this.details.alertText}
+            </span>
+          </div>
+        </Collapse>
         <div
           style={{
-            width: 250,
-            height: "100%",
-            display: "inline-block",
-            color: "white",
-            fontSize: 50,
-            backgroundColor: this.details.awayColor || "grey",
-            border: "1px solid black",
-            textTransform: "uppercase"
+            width: "100%",
+
+            zIndex: 99,
+            height: 58,
+            fontFamily: "roboto"
           }}
         >
-          <span style={{ paddingLeft: 5 }}>
-            {this.details.awayTeam || "\u00A0"}
-          </span>
-        </div>
-        <div
-          style={{
-            width: 80,
-            height: "100%",
-            display: "inline-block",
-            color: "white",
-            fontSize: 50,
-            textAlign: "center",
-            backgroundColor: this.details.awayColor || "grey",
-            border: "1px solid black"
-          }}
-        >
-          <span>{this.details.awayScore || "\u00A0"}</span>
-        </div>
-        <div
-          style={{
-            width: 250,
-            height: "100%",
-            top: "50%",
-            display: "inline-block",
-            color: "white",
-            fontSize: 50,
-            backgroundColor: this.details.homeColor || "grey",
-            border: "1px solid black",
-            textTransform: "uppercase"
-          }}
-        >
-          <span style={{ paddingLeft: 5 }}>
-            {this.details.homeTeam || "\u00A0"}
-          </span>
-        </div>
-        <div
-          style={{
-            width: 80,
-            height: "100%",
-            display: "inline-block",
-            color: "white",
-            fontSize: 50,
-            textAlign: "center",
-            backgroundColor: this.details.homeColor || "grey",
-            border: "1px solid black"
-          }}
-        >
-          <span>{this.details.homeScore || "\u00A0"}</span>
-        </div>
-        <div
-          style={{
-            width: 150,
-            height: "100%",
-            display: "inline-block",
-            color: "grey",
-            fontSize: 50,
-            textAlign: "center",
-            border: "1px solid black"
-          }}
-        >
-          Time
-        </div>
-        <div
-          style={{
-            width: 120,
-            height: "100%",
-            display: "inline-block",
-            color: "grey",
-            fontSize: 50,
-            textAlign: "center",
-            border: "1px solid black"
-          }}
-        >
-          {this.details.quarter || "\u00A0"}
+          <div
+            style={{
+              width: 250,
+              height: "100%",
+              display: "inline-block",
+              color: "white",
+              fontSize: 50,
+              backgroundColor: this.details.awayColor || "grey",
+              border: "1px solid black",
+              textTransform: "uppercase"
+            }}
+          >
+            <span style={{ paddingLeft: 5 }}>
+              {this.details.awayTeam || "\u00A0"}
+            </span>
+          </div>
+          <div
+            style={{
+              width: 80,
+              height: "100%",
+              display: "inline-block",
+              color: "white",
+              fontSize: 50,
+              textAlign: "center",
+              backgroundColor: this.details.awayColor || "grey",
+              border: "1px solid black"
+            }}
+          >
+            <span>{this.details.awayScore || "\u00A0"}</span>
+          </div>
+          <div
+            style={{
+              width: 250,
+              height: "100%",
+              top: "50%",
+              display: "inline-block",
+              color: "white",
+              fontSize: 50,
+              backgroundColor: this.details.homeColor || "grey",
+              border: "1px solid black",
+              textTransform: "uppercase"
+            }}
+          >
+            <span style={{ paddingLeft: 5 }}>
+              {this.details.homeTeam || "\u00A0"}
+            </span>
+          </div>
+          <div
+            style={{
+              width: 80,
+              height: "100%",
+              display: "inline-block",
+              color: "white",
+              fontSize: 50,
+              textAlign: "center",
+              backgroundColor: this.details.homeColor || "grey",
+              border: "1px solid black"
+            }}
+          >
+            <span>{this.details.homeScore || "\u00A0"}</span>
+          </div>
+          <div
+            style={{
+              width: 150,
+              height: "100%",
+              display: "inline-block",
+              color: "grey",
+              fontSize: 50,
+              textAlign: "center",
+              border: "1px solid black"
+            }}
+          >
+            Time
+          </div>
+          <div
+            style={{
+              width: 120,
+              height: "100%",
+              display: "inline-block",
+              color: "grey",
+              fontSize: 50,
+              textAlign: "center",
+              border: "1px solid black"
+            }}
+          >
+            {this.details.quarter || "\u00A0"}
+          </div>
         </div>
       </div>
     );

@@ -10,6 +10,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import ColorPicker from "material-ui-color-picker";
+
 var ls = require("local-storage");
 
 class Controls extends Component {
@@ -27,6 +29,28 @@ class Controls extends Component {
     };
     this.send();
   };
+  alert = (text, color) => {
+    this.details = {
+      ...this.details,
+      alertText: text,
+      alertColor: color
+    };
+    this.send();
+    this.details = {
+      ...this.details,
+      alertText: "",
+      alertColor: ""
+    };
+  };
+  handleColorChange = (color, value) => {
+    if (color) {
+      this.details = {
+        ...this.details,
+        [value]: color
+      };
+      this.send();
+    }
+  };
   handleChange = name => event => {
     this.details = { ...this.details, [name]: event.target.value };
     this.send();
@@ -40,6 +64,13 @@ class Controls extends Component {
           value={this.details.awayTeam}
           onChange={this.handleChange("awayTeam")}
           margin="normal"
+        />
+        <br />
+        <ColorPicker
+          name="color"
+          defaultValue="#000"
+          // value={this.details.awayColor} // for controlled component
+          onChange={color => this.handleColorChange(color, "awayColor")}
         />
         <br />
         <TextField
@@ -57,13 +88,32 @@ class Controls extends Component {
         <Button onClick={() => this.addScore(6, "awayScore")}>Touchdown</Button>
         <Button onClick={() => this.addScore(1, "awayScore")}>1pt</Button>
         <Button onClick={() => this.addScore(2, "awayScore")}>Safety</Button>
-        <br /> <hr />
+        <br />
+        <Button
+          onClick={() =>
+            this.alert(
+              "Timeout " + (this.details.awayTeam || ""),
+              this.details.awayColor
+            )
+          }
+        >
+          Timeout
+        </Button>
+        <br />
+        <hr />
         <TextField
           id="standard-name"
           label="Home team name"
           value={this.details.homeTeam}
           onChange={this.handleChange("homeTeam")}
           margin="normal"
+        />
+        <br />{" "}
+        <ColorPicker
+          name="color"
+          defaultValue="#000"
+          value={this.details.homeColor} // for controlled component
+          onChange={color => this.handleColorChange(color, "homeColor")}
         />
         <br />
         <TextField
@@ -82,10 +132,22 @@ class Controls extends Component {
         <Button onClick={() => this.addScore(1, "homeScore")}>1pt</Button>
         <Button onClick={() => this.addScore(2, "homeScore")}>Safety</Button>
         <br />
+        <Button
+          onClick={() =>
+            this.alert(
+              "Timeout " + (this.details.awayTeam || ""),
+              this.details.awayColor
+            )
+          }
+        >
+          Timeout
+        </Button>
+        <br />
         <hr />
         <FormControl style={{ width: 167 }}>
-          <InputLabel htmlFor="age-simple">Age</InputLabel>
+          <InputLabel htmlFor="age-simple">Quarter</InputLabel>
           <Select
+            style={{ color: "black" }}
             value={this.details.quarter}
             onChange={this.handleChange("quarter")}
           >
@@ -103,6 +165,8 @@ class Controls extends Component {
             <MenuItem value={"OT 3 Final"}>OT 3 Final</MenuItem>
           </Select>
         </FormControl>
+        <br />
+        <br />
         <br />
         <Button onClick={this.send}>Save</Button>
       </div>
