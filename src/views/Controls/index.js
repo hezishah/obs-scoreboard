@@ -17,10 +17,13 @@ var ls = require("local-storage");
 class Controls extends Component {
   constructor() {
     super();
-    this.details = {};
+    this.details = window.localStorage.getItem("details")
+      ? JSON.parse(window.localStorage.getItem("details"))
+      : { timer: 10000 };
   }
   send = () => {
     ls.set("details", this.details);
+    this.forceUpdate();
   };
   addScore = (pts, value) => {
     this.details = {
@@ -51,9 +54,51 @@ class Controls extends Component {
       this.send();
     }
   };
+  handleTimeChange = name => event => {
+    if (name === "minutes") {
+      this.minutes = event.target.value;
+      this.details = {
+        ...this.details,
+        timer: 60 * event.target.value + this.seconds
+      };
+    } else if (name === "seconds") {
+      this.seconds = event.target.value;
+      this.details = {
+        ...this.details,
+        timer: 60 * this.minutes + event.target.value
+      };
+      if (this.details.timer >= 0) {
+        this.send();
+      } else {
+        this.details.timer === 0;
+        this.minutes === 0;
+        this.seconds === 0;
+        this.stopTimer();
+      }
+    }
+    console.log(name, event.target.value);
+  };
   handleChange = name => event => {
     this.details = { ...this.details, [name]: event.target.value };
+    console.log(name);
+    if (name === "quarter") this.forceUpdate();
     this.send();
+  };
+  stopTimer = () => {
+    clearInterval("timer");
+  };
+  startTimer = () => {
+    const timer = setInterval(() => {
+      if (this.details.timer !== 0) {
+        this.details = {
+          ...this.details,
+          timer: this.details.timer - 1000
+        };
+        this.send();
+      } else {
+        clearInterval("timer");
+      }
+    }, 1000);
   };
   render() {
     return (
@@ -69,7 +114,7 @@ class Controls extends Component {
         <ColorPicker
           name="color"
           defaultValue="#000"
-          // value={this.details.awayColor} // for controlled component
+          value={this.details.awayColor} // for controlled component
           onChange={color => this.handleColorChange(color, "awayColor")}
         />
         <br />
@@ -82,14 +127,38 @@ class Controls extends Component {
           margin="normal"
         />
         <br />
-        <Button onClick={() => this.addScore(3, "awayScore")}>
+        <Button
+          variant="outlined"
+          style={{ margin: 5 }}
+          onClick={() => this.addScore(3, "awayScore")}
+        >
           Field Goal
         </Button>
-        <Button onClick={() => this.addScore(6, "awayScore")}>Touchdown</Button>
-        <Button onClick={() => this.addScore(1, "awayScore")}>1pt</Button>
-        <Button onClick={() => this.addScore(2, "awayScore")}>Safety</Button>
+        <Button
+          style={{ margin: 5 }}
+          variant="outlined"
+          onClick={() => this.addScore(6, "awayScore")}
+        >
+          Touchdown
+        </Button>
+        <Button
+          style={{ margin: 5 }}
+          variant="outlined"
+          onClick={() => this.addScore(1, "awayScore")}
+        >
+          1pt
+        </Button>
+        <Button
+          style={{ margin: 5 }}
+          variant="outlined"
+          onClick={() => this.addScore(2, "awayScore")}
+        >
+          Safety
+        </Button>
         <br />
         <Button
+          style={{ margin: 5 }}
+          variant="outlined"
           onClick={() =>
             this.alert(
               "Timeout " + (this.details.awayTeam || ""),
@@ -125,18 +194,42 @@ class Controls extends Component {
           margin="normal"
         />
         <br />
-        <Button onClick={() => this.addScore(3, "homeScore")}>
+        <Button
+          style={{ margin: 5 }}
+          variant="outlined"
+          onClick={() => this.addScore(3, "homeScore")}
+        >
           Field Goal
         </Button>
-        <Button onClick={() => this.addScore(6, "homeScore")}>Touchdown</Button>
-        <Button onClick={() => this.addScore(1, "homeScore")}>1pt</Button>
-        <Button onClick={() => this.addScore(2, "homeScore")}>Safety</Button>
+        <Button
+          style={{ margin: 5 }}
+          variant="outlined"
+          onClick={() => this.addScore(6, "homeScore")}
+        >
+          Touchdown
+        </Button>
+        <Button
+          style={{ margin: 5 }}
+          variant="outlined"
+          onClick={() => this.addScore(1, "homeScore")}
+        >
+          1pt
+        </Button>
+        <Button
+          style={{ margin: 5 }}
+          variant="outlined"
+          onClick={() => this.addScore(2, "homeScore")}
+        >
+          Safety
+        </Button>
         <br />
         <Button
+          style={{ margin: 5 }}
+          variant="outlined"
           onClick={() =>
             this.alert(
-              "Timeout " + (this.details.awayTeam || ""),
-              this.details.awayColor
+              "Timeout " + (this.details.homeTeam || ""),
+              this.details.homeColor
             )
           }
         >
@@ -144,7 +237,7 @@ class Controls extends Component {
         </Button>
         <br />
         <hr />
-        <FormControl style={{ width: 167 }}>
+        <FormControl style={{ width: 167, textAlign: "left" }}>
           <InputLabel htmlFor="age-simple">Quarter</InputLabel>
           <Select
             style={{ color: "black" }}
@@ -167,7 +260,23 @@ class Controls extends Component {
         </FormControl>
         <br />
         <br />
-        <br />
+        <TextField
+          id="standard-name"
+          label="Minutes"
+          type="number"
+          value={this.minutes}
+          onChange={this.handleTimeChange("minutes")}
+          margin="normal"
+        />
+        <TextField
+          id="standard-name"
+          label="Seconds"
+          type="number"
+          value={this.seconds}
+          onChange={this.handleTimeChange("seconds")}
+          margin="normal"
+        />
+        <br /> <Button onClick={this.startTimer.bind(this)}>Start</Button>
         <Button onClick={this.send}>Save</Button>
       </div>
     );

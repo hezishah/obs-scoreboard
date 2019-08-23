@@ -12,6 +12,7 @@ class Scoreboard extends Component {
   componentDidMount() {
     this.set(ls.get("details"));
     ls.on("details", this.set);
+    console.log(this.details);
   }
   componentDidUpdate() {
     if (this.details.alertText)
@@ -38,11 +39,22 @@ class Scoreboard extends Component {
   render() {
     return (
       <div>
-        <Collapse style={{ zIndex: 1000 }} in={this.details.alertText}>
+        <Collapse
+          style={{
+            zIndex: 1000,
+            position: "fixed",
+            width: 945,
+            top: 0,
+            left: 0
+          }}
+          in={this.details ? this.details.alertText : false}
+        >
           <div
             style={{
               width: "100%",
-              height: 58,
+              height: 60,
+              margin: "auto",
+              textAlign: "center",
               backgroundColor: this.details.alertColor || "grey",
               zIndex: 1000
             }}
@@ -55,7 +67,9 @@ class Scoreboard extends Component {
         <div
           style={{
             width: "100%",
-
+            position: "fixed",
+            top: 0,
+            right: 0,
             zIndex: 99,
             height: 58,
             fontFamily: "roboto"
@@ -133,7 +147,11 @@ class Scoreboard extends Component {
               border: "1px solid black"
             }}
           >
-            Time
+            {this.details.timer
+              ? Math.floor(this.details.timer / 1000 / 60) +
+                ":" +
+                ((this.details.timer / 1000) % 60)
+              : '\u00a0'}
           </div>
           <div
             style={{
