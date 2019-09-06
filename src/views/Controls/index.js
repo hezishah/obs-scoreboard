@@ -4,14 +4,18 @@ const BroadcastChannel = require("broadcast-channel");
 import TextField from "@material-ui/core/TextField";
 import Input from "@material-ui/core/Input";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import FilledInput from "@material-ui/core/FilledInput";
 import InputLabel from "@material-ui/core/InputLabel";
+import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import ColorPicker from "material-ui-color-picker";
-
+import PlayArrow from "@material-ui/icons/PlayArrow";
+import Pause from "@material-ui/icons/Pause";
+import Edit from "@material-ui/icons/Edit";
 var ls = require("local-storage");
 
 class Controls extends Component {
@@ -20,6 +24,10 @@ class Controls extends Component {
     this.details = window.localStorage.getItem("details")
       ? JSON.parse(window.localStorage.getItem("details"))
       : { timer: 10000 };
+    this.minutes = Math.floor(this.details.timer / 1000 / 60);
+    this.seconds = (this.details.timer / 1000) % 60;
+    this.timerInstance = null;
+    this.edit = { homeTeam: false, awayTeam: false, awayColor: false };
   }
   send = () => {
     ls.set("details", this.details);
@@ -57,25 +65,22 @@ class Controls extends Component {
   handleTimeChange = name => event => {
     if (name === "minutes") {
       this.minutes = event.target.value;
-      this.details = {
-        ...this.details,
-        timer: 60 * event.target.value + this.seconds
-      };
     } else if (name === "seconds") {
       this.seconds = event.target.value;
-      this.details = {
-        ...this.details,
-        timer: 60 * this.minutes + event.target.value
-      };
-      if (this.details.timer >= 0) {
-        this.send();
-      } else {
-        this.details.timer === 0;
-        this.minutes === 0;
-        this.seconds === 0;
-        this.stopTimer();
-      }
     }
+    this.details = {
+      ...this.details,
+      timer: (parseInt(60 * this.minutes) + parseInt(this.seconds)) * 1000
+    };
+    if (this.details.timer >= 0) {
+      this.send();
+    } else {
+      this.details.timer === 0;
+      this.minutes === 0;
+      this.seconds === 0;
+    }
+    this.forceUpdate();
+
     console.log(name, event.target.value);
   };
   handleChange = name => event => {
@@ -85,18 +90,43 @@ class Controls extends Component {
     this.send();
   };
   stopTimer = () => {
-    clearInterval("timer");
+    clearInterval(this.timerInstance);
+    this.timerRunning = false;
+  };
+  toggleTimer = () => {
+    if (this.timerRunning) {
+      this.stopTimer();
+    } else {
+      this.startTimer();
+    }
+
+    this.forceUpdate();
+  };
+  resetClock = () => {
+    this.minutes = 12;
+    this.seconds = 0;
+    this.details.timer = 720000;
+    this.timerRunning = false;
+    clearInterval(this.timerInstance);
+    this.send();
+    this.forceUpdate();
   };
   startTimer = () => {
-    const timer = setInterval(() => {
-      if (this.details.timer !== 0) {
+    this.timerRunning = true;
+    this.timerInstance = setInterval(() => {
+      if (this.details.timer > 0) {
         this.details = {
           ...this.details,
           timer: this.details.timer - 1000
         };
+        this.minutes = Math.floor(this.details.timer / 1000 / 60);
+        this.seconds = (this.details.timer / 1000) % 60;
         this.send();
+        this.forceUpdate();
       } else {
-        clearInterval("timer");
+        this.timerRunning = false;
+        clearInterval(this.timerInstance);
+        this.forceUpdate();
       }
     }, 1000);
   };
@@ -104,20 +134,41 @@ class Controls extends Component {
     return (
       <div style={{ textAlign: "center" }}>
         <TextField
+          InputProps={{
+            endAdornment: (
+              <InputAdornment>
+                <IconButton
+                  onClick={() => {
+                    this.edit.awayTeam = !this.edit.awayTeam;
+                    this.forceUpdate();
+                  }}
+                >
+                  <Edit />
+                </IconButton>
+              </InputAdornment>
+            )
+          }}
+          disabled={!this.edit.awayTeam}
           id="standard-name"
-          label="Away team name"
+          label="Home team name"
           value={this.details.awayTeam}
           onChange={this.handleChange("awayTeam")}
           margin="normal"
         />
         <br />
-        <ColorPicker
-          name="color"
-          defaultValue="#000"
-          value={this.details.awayColor} // for controlled component
-          onChange={color => this.handleColorChange(color, "awayColor")}
-        />
-        <br />
+        {this.edit.awayTeam ? (
+          <div>
+            <ColorPicker
+              name="color"
+              defaultValue="#000"
+              value={this.details.awayColor} // for controlled component
+              onChange={color => this.handleColorChange(color, "awayColor")}
+              disabled={!this.details.awayColor}
+            />
+            <br />
+          </div>
+        ) : null}
+
         <TextField
           id="standard-name"
           label="Away Score"
@@ -170,14 +221,34 @@ class Controls extends Component {
         </Button>
         <br />
         <hr />
-        <TextField
-          id="standard-name"
-          label="Home team name"
-          value={this.details.homeTeam}
-          onChange={this.handleChange("homeTeam")}
-          margin="normal"
-        />
-        <br />{" "}
+        <div>
+          <div style={{ display: "inline-block" }} />
+          <div style={{ display: "inline-block" }}>
+            <TextField
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment>
+                    <IconButton
+                      onClick={() => {
+                        this.edit.homeTeam = !this.edit.homeTeam;
+                        this.forceUpdate();
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+              disabled={!this.edit.homeTeam}
+              id="standard-name"
+              label="Home team name"
+              value={this.details.homeTeam}
+              onChange={this.handleChange("homeTeam")}
+              margin="normal"
+            />
+          </div>
+        </div>
+        <br />
         <ColorPicker
           name="color"
           defaultValue="#000"
@@ -253,9 +324,7 @@ class Controls extends Component {
             <MenuItem value={"OT"}>OT</MenuItem>
             <MenuItem value={"OT 2"}>OT 2</MenuItem>
             <MenuItem value={"OT 3"}>OT 3</MenuItem>
-            <MenuItem value={"OT Final"}>OT Final</MenuItem>
-            <MenuItem value={"OT 2 Final"}>OT 2 Final</MenuItem>
-            <MenuItem value={"OT 3 Final"}>OT 3 Final</MenuItem>
+            <MenuItem value={"F/OT"}>F/OT</MenuItem>
           </Select>
         </FormControl>
         <br />
@@ -276,7 +345,13 @@ class Controls extends Component {
           onChange={this.handleTimeChange("seconds")}
           margin="normal"
         />
-        <br /> <Button onClick={this.startTimer.bind(this)}>Start</Button>
+        <IconButton onClick={this.toggleTimer}>
+          {this.timerRunning ? <Pause /> : <PlayArrow />}
+        </IconButton>
+        {/* <br /> <Button>Start</Button>
+        <Button onClick={this.stopTimer}>Stop</Button> */}
+        <br />
+        <Button onClick={this.resetClock}>12:00</Button>
         <Button onClick={this.send}>Save</Button>
       </div>
     );

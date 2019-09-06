@@ -1,4 +1,4 @@
-import React, { useEffect, Component } from "react";
+import React, { Component } from "react";
 import Collapse from "@material-ui/core/Collapse";
 
 var ls = require("local-storage");
@@ -35,7 +35,6 @@ class Scoreboard extends Component {
     this.details = value;
     this.forceUpdate();
   };
-
   render() {
     return (
       <div>
@@ -59,7 +58,7 @@ class Scoreboard extends Component {
               zIndex: 1000
             }}
           >
-            <span style={{ fontSize: 45, color: "white" }}>
+            <span style={{ fontSize: 45, color: "white", paddingTop:5 }}>
               {this.details.alertText}
             </span>
           </div>
@@ -150,8 +149,8 @@ class Scoreboard extends Component {
             {this.details.timer
               ? Math.floor(this.details.timer / 1000 / 60) +
                 ":" +
-                ((this.details.timer / 1000) % 60)
-              : '\u00a0'}
+                ('0' + ((this.details.timer / 1000) % 60)).slice(-2)
+              : '0:00'}
           </div>
           <div
             style={{
