@@ -181,14 +181,26 @@ class Controls extends Component {
         <Button
           variant="outlined"
           style={{ margin: 5 }}
-          onClick={() => this.addScore(3, "awayScore")}
+          onClick={() => {
+            this.addScore(3, "awayScore");
+            this.alert(
+              "Field Goal " + ("Glenwood" || ""),
+              this.details.awayColor
+            );
+          }}
         >
           Field Goal
         </Button>
         <Button
           style={{ margin: 5 }}
           variant="outlined"
-          onClick={() => this.addScore(6, "awayScore")}
+          onClick={() => {
+            this.addScore(6, "awayScore");
+            this.alert(
+              "Touchdown " + ("Glenwood" || ""),
+              this.details.awayColor
+            );
+          }}
         >
           Touchdown
         </Button>
@@ -210,16 +222,27 @@ class Controls extends Component {
         <Button
           style={{ margin: 5 }}
           variant="outlined"
-          onClick={() =>
+          onClick={() => {
+            this.details.awayTimeouts -= 1;
+            this.send();
             this.alert(
-              "Timeout " + (this.details.awayTeam || ""),
+              // "Timeout " + (this.details.awayTeam || ""),
+              "Timeout " + ("Glenwood" || ""),
               this.details.awayColor
-            )
-          }
+            );
+          }}
         >
           Timeout
         </Button>
         <br />
+        <TextField
+          id="standard-name"
+          label="Away Timeouts"
+          type="number"
+          value={this.details.awayTimeouts}
+          onChange={this.handleChange("awayTimeouts")}
+          margin="normal"
+        />
         <hr />
         <div>
           <div style={{ display: "inline-block" }} />
@@ -268,14 +291,23 @@ class Controls extends Component {
         <Button
           style={{ margin: 5 }}
           variant="outlined"
-          onClick={() => this.addScore(3, "homeScore")}
+          onClick={() => {
+            this.addScore(3, "homeScore");
+            this.alert(
+              "Field Goal " + ("Heelan" || ""),
+              this.details.homeColor
+            );
+          }}
         >
           Field Goal
         </Button>
         <Button
           style={{ margin: 5 }}
           variant="outlined"
-          onClick={() => this.addScore(6, "homeScore")}
+          onClick={() => {
+            this.addScore(6, "homeScore");
+            this.alert("Touchdown " + ("Heelan" || ""), this.details.homeColor);
+          }}
         >
           Touchdown
         </Button>
@@ -297,16 +329,26 @@ class Controls extends Component {
         <Button
           style={{ margin: 5 }}
           variant="outlined"
-          onClick={() =>
+          onClick={() => {
+            this.details.homeTimeouts -= 1;
+            this.send();
             this.alert(
               "Timeout " + (this.details.homeTeam || ""),
               this.details.homeColor
-            )
-          }
+            );
+          }}
         >
           Timeout
         </Button>
         <br />
+        <TextField
+          id="standard-name"
+          label="Home Timeouts"
+          type="number"
+          value={this.details.homeTimeouts}
+          onChange={this.handleChange("homeTimeouts")}
+          margin="normal"
+        />
         <hr />
         <FormControl style={{ width: 167, textAlign: "left" }}>
           <InputLabel htmlFor="age-simple">Quarter</InputLabel>
