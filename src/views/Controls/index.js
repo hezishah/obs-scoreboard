@@ -272,13 +272,17 @@ class Controls extends Component {
           </div>
         </div>
         <br />
-        <ColorPicker
-          name="color"
-          defaultValue="#000"
-          value={this.details.homeColor} // for controlled component
-          onChange={color => this.handleColorChange(color, "homeColor")}
-        />
-        <br />
+        {this.edit.homeTeam ? (
+          <div>
+            <ColorPicker
+              name="color"
+              defaultValue="#000"
+              value={this.details.homeColor} // for controlled component
+              onChange={color => this.handleColorChange(color, "homeColor")}
+            />
+            <br />
+          </div>
+        ) : null}
         <TextField
           id="standard-name"
           label="Home Score"
