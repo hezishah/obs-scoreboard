@@ -86,15 +86,87 @@ class Scoreboard extends Component {
               textTransform: "uppercase"
             }}
           >
-            <div style={{ paddingLeft: 5, display:'inline-block' }}>
-              {this.details.awayTeam || "\u00A0"}
+            <div style={{ paddingLeft: 5, display: "inline-block" }}>
+              {this.details.awayTeamShort || "\u00A0"}
             </div>
-            <div style={{ position:'relative', top:-5, left:38, width: 48, height: 5, backgroundColor: this.details.awayTimeouts >= 1 ? "white" : this.details.awayColor }} />
-            <div style={{ position:'relative', top:-10, left:98, width: 48, height: 5, backgroundColor: this.details.awayTimeouts >= 2 ? "white" : this.details.awayColor }} />
-            <div style={{ position:'relative', top:-15, left:158, width: 48, height: 5, backgroundColor: this.details.awayTimeouts >= 3 ? "white" : this.details.awayColor }} />
-            <div style={{ position:'relative', top:-20, left:378, width: 48, height: 5, backgroundColor: this.details.homeTimeouts >= 1 ? "white" : this.details.homeColor }} />
-            <div style={{ position:'relative', top:-25, left:438, width: 48, height: 5, backgroundColor: this.details.homeTimeouts >= 2 ? "white" : this.details.homeColor}} />
-            <div style={{ position:'relative', top:-30, left:498, width: 48, height: 5, backgroundColor: this.details.homeTimeouts >= 3 ? "white" : this.details.homeColor}} />
+            <div
+              style={{
+                position: "relative",
+                top: -5,
+                left: 38,
+                width: 48,
+                height: 5,
+                backgroundColor:
+                  this.details.awayTimeouts >= 1
+                    ? "white"
+                    : this.details.awayColor
+              }}
+            />
+            <div
+              style={{
+                position: "relative",
+                top: -10,
+                left: 98,
+                width: 48,
+                height: 5,
+                backgroundColor:
+                  this.details.awayTimeouts >= 2
+                    ? "white"
+                    : this.details.awayColor
+              }}
+            />
+            <div
+              style={{
+                position: "relative",
+                top: -15,
+                left: 158,
+                width: 48,
+                height: 5,
+                backgroundColor:
+                  this.details.awayTimeouts >= 3
+                    ? "white"
+                    : this.details.awayColor
+              }}
+            />
+            <div
+              style={{
+                position: "relative",
+                top: -20,
+                left: 378,
+                width: 48,
+                height: 5,
+                backgroundColor:
+                  this.details.homeTimeouts >= 1
+                    ? "white"
+                    : this.details.homeColor
+              }}
+            />
+            <div
+              style={{
+                position: "relative",
+                top: -25,
+                left: 438,
+                width: 48,
+                height: 5,
+                backgroundColor:
+                  this.details.homeTimeouts >= 2
+                    ? "white"
+                    : this.details.homeColor
+              }}
+            />
+            <div
+              style={{
+                position: "relative",
+                top: -30,
+                left: 498,
+                width: 48,
+                height: 5,
+                backgroundColor:
+                  this.details.homeTimeouts >= 3
+                    ? "white"
+                    : this.details.homeColor
+              }}
+            />
           </div>
           <div
             style={{
@@ -124,7 +196,7 @@ class Scoreboard extends Component {
             }}
           >
             <span style={{ paddingLeft: 5 }}>
-              {this.details.homeTeam || "\u00A0"}
+              {this.details.homeTeamShort || "\u00A0"}
             </span>
           </div>
           <div

@@ -150,14 +150,23 @@ class Controls extends Component {
           }}
           disabled={!this.edit.awayTeam}
           id="standard-name"
-          label="Home team name"
-          value={this.details.awayTeam}
-          onChange={this.handleChange("awayTeam")}
+          label="Away team long"
+          value={this.details.awayTeamLong}
+          onChange={this.handleChange("awayTeamLong")}
           margin="normal"
         />
         <br />
         {this.edit.awayTeam ? (
           <div>
+          <TextField
+            disabled={!this.edit.awayTeam}
+            id="standard-name"
+            label="Away team short"
+            value={this.details.awayTeamShort}
+            onChange={this.handleChange("awayTeamShort")}
+            margin="normal"
+          />
+          <br />
             <ColorPicker
               name="color"
               defaultValue="#000"
@@ -173,6 +182,7 @@ class Controls extends Component {
           id="standard-name"
           label="Away Score"
           type="number"
+          min="0"
           value={this.details.awayScore}
           onChange={this.handleChange("awayScore")}
           margin="normal"
@@ -264,9 +274,9 @@ class Controls extends Component {
               }}
               disabled={!this.edit.homeTeam}
               id="standard-name"
-              label="Home team name"
-              value={this.details.homeTeam}
-              onChange={this.handleChange("homeTeam")}
+              label="Home team long"
+              value={this.details.homeTeamLong}
+              onChange={this.handleChange("homeTeamLong")}
               margin="normal"
             />
           </div>
@@ -274,6 +284,15 @@ class Controls extends Component {
         <br />
         {this.edit.homeTeam ? (
           <div>
+            <TextField
+              disabled={!this.edit.homeTeam}
+              id="standard-name"
+              label="Home team short"
+              value={this.details.homeTeamShort}
+              onChange={this.handleChange("homeTeamShort")}
+              margin="normal"
+            />
+            <br />
             <ColorPicker
               name="color"
               defaultValue="#000"
@@ -298,7 +317,7 @@ class Controls extends Component {
           onClick={() => {
             this.addScore(3, "homeScore");
             this.alert(
-              "Field Goal " + ("Heelan" || ""),
+              "Field Goal " + (this.details.homeTeamLong || ""),
               this.details.homeColor
             );
           }}
@@ -310,7 +329,10 @@ class Controls extends Component {
           variant="outlined"
           onClick={() => {
             this.addScore(6, "homeScore");
-            this.alert("Touchdown " + ("Heelan" || ""), this.details.homeColor);
+            this.alert(
+              "Touchdown " + (this.details.homeTeamLong || ""),
+              this.details.homeColor
+            );
           }}
         >
           Touchdown
@@ -337,7 +359,7 @@ class Controls extends Component {
             this.details.homeTimeouts -= 1;
             this.send();
             this.alert(
-              "Timeout " + (this.details.homeTeam || ""),
+              "Timeout " + (this.details.homeTeamLong || ""),
               this.details.homeColor
             );
           }}
