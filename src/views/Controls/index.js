@@ -194,7 +194,7 @@ class Controls extends Component {
           onClick={() => {
             this.addScore(3, "awayScore");
             this.alert(
-              "Field Goal " + ("Glenwood" || ""),
+              "Field Goal " + (this.details.awayTeamLong || "Away Team"),
               this.details.awayColor
             );
           }}
@@ -207,7 +207,7 @@ class Controls extends Component {
           onClick={() => {
             this.addScore(6, "awayScore");
             this.alert(
-              "Touchdown " + ("Glenwood" || ""),
+              "Touchdown " + (this.details.awayTeamLong || "Away Team"),
               this.details.awayColor
             );
           }}
@@ -236,8 +236,7 @@ class Controls extends Component {
             this.details.awayTimeouts -= 1;
             this.send();
             this.alert(
-              // "Timeout " + (this.details.awayTeam || ""),
-              "Timeout " + ("Glenwood" || ""),
+              "Timeout " + (this.details.awayTeamLong || "Away Team"),
               this.details.awayColor
             );
           }}
