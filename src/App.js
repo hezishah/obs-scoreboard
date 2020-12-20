@@ -4,7 +4,7 @@ import './App.css';
 import Scoreboard from './views/Scoreboard/';
 import Controls from './views/Controls/';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-const BroadcastChannel = require('broadcast-channel');
+const BroadcastChannel = require('broadcast-channel')
 
 // import firebase from 'firebase';
 // var config = {
@@ -19,7 +19,7 @@ const BroadcastChannel = require('broadcast-channel');
 // firebase.database().ref('/scoreboard/').on('value', (newData) => {
 //   console.log(newData.val());
 // });
-const channel = new BroadcastChannel('scoreboard');
+const channel = new BroadcastChannel.BroadcastChannel('scoreboard');
 const App = props => {
   // firebase.database().ref('/scoreboard/scoreboard');
   // channel.postMessage(details);
